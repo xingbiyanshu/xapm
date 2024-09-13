@@ -1,6 +1,8 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
+//    alias(libs.plugins.android.library)
+//    alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.android.library")
+//    id("org.jetbrains.kotlin.android")
     id("maven-publish")
 }
 
@@ -8,10 +10,15 @@ android {
     namespace = "com.sissi.lab.hprofdumper"
     compileSdk = 34
 
+    ndkVersion = "23.1.7779620" // 对齐koom的版本，高版本会导致dump功能异常，koom尚未适配
+//    ndkVersion = "25.1.8937393"
+//    ndkVersion = "26.1.10909125" // 若不指定，apg有默认的版本，可在apg配置文件查看。默认版本较低，会报错(添加"-std=c++17"可解决)。
+
     defaultConfig {
-        minSdk = 24
+        minSdk = 18
         externalNativeBuild {
             cmake {
+            	cppFlags("-std=c++17", "-fno-exceptions", "-fno-rtti")
 //                arguments +="-DANDROID_STL=c++_shared"
             }
         }
@@ -33,9 +40,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+//    kotlinOptions {
+//        jvmTarget = "1.8"
+//    }
     externalNativeBuild {
         cmake {
             path("src/main/cpp/CMakeLists.txt")
@@ -60,7 +67,7 @@ dependencies {
 
 publishing {
     publications {
-        register<MavenPublication>("release") {
+        register<MavenPublication>("hprofdumper") {
             groupId = "com.sissi.lab"
             artifactId = "hprofdumper"
             version = "1.0"

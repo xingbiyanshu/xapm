@@ -13,10 +13,17 @@ add_compile_options(-Wall -Wextra #[[-Werror -Wno-unused-command-line-argument]]
 
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/include/
+#        D:\\AndroidStudioProjects\\lab\\KOOM\\koom-common\\third-party\\xhook\\src\\main\\cpp\\xhook\\src
 )
 
-link_directories(
-)
+#link_directories(
+#    D:\\AndroidStudioProjects\\lab\\KOOM\\koom-common\\third-party\\xhook\\src\\main\\libs\\${ANDROID_ABI}
+#)
+
+
+#add_library(xhook_lib SHARED IMPORTED)
+#set_target_properties(xhook_lib PROPERTIES IMPORTED_LOCATION
+#        D:\\AndroidStudioProjects\\lab\\KOOM\\koom-common\\third-party\\xhook\\src\\main\\libs\\${ANDROID_ABI}\\libxhook_lib.so)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -55,6 +62,7 @@ target_link_libraries( # Specifies the target library.
         ${TARGET}
 #        bytehook::bytehook
         xhook::xhook
+#        xhook_lib
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib})

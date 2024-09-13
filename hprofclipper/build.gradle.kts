@@ -1,17 +1,23 @@
-import com.android.build.api.dsl.Packaging
+//import com.android.build.api.dsl.Packaging
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
+//    alias(libs.plugins.android.library)
+//    alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.android.library")
+//    id("org.jetbrains.kotlin.android")
     id("maven-publish")
 }
 
 android {
     namespace = "com.sissi.lab.hprofclipper"
     compileSdk = 34
+    ndkVersion = "23.1.7779620" // koom使用的版本，它的agp7.1.0
+//    ndkVersion = "25.1.8937393"
+//    ndkVersion = "26.1.10909125" // agp8.4.1默认的ndk版本，agp8.4.1是本项目首次正常跑起来时（通过prefab发布和引用相关组件）默认的版本
 
     defaultConfig {
-        minSdk = 24
+//        minSdk = 18 // AGP 7.1引入了prefab功能，18不支持prefab。
+        minSdk = 18 // 经实测至少24才可正常使用prefab，否则找不到通过prefab发布的xhook
         externalNativeBuild {
             cmake {
                 arguments +="-DANDROID_STL=c++_shared"
@@ -35,9 +41,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+//    kotlinOptions {
+//        jvmTarget = "1.8"
+//    }
     externalNativeBuild {
         cmake {
             path("src/main/cpp/CMakeLists.txt")
@@ -49,11 +55,11 @@ android {
         prefab=true // 需要引用xhook发布库的头文件
     }
 
-    packaging {
-        jniLibs{
+//    packaging {
+//        jniLibs{
 //            keepDebugSymbols += "**/*.so"
-        }
-    }
+//        }
+//    }
 }
 
 dependencies {
@@ -63,7 +69,7 @@ dependencies {
 
 publishing {
     publications {
-        register<MavenPublication>("release") {
+        register<MavenPublication>("hprofclipper") {
             groupId = "com.sissi.lab"
             artifactId = "hprofclipper"
             version = "1.0"
