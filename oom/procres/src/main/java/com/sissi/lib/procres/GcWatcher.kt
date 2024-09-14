@@ -29,7 +29,7 @@ object GcWatcher {
                 try {
                     val curGcTimeStamp = System.currentTimeMillis()
                     for (l in gcListeners) {
-                        l.invoke()
+                        l.invoke() // TODO gc的时候判断memory的使用情况再dump hprof
                     }
                     if (curGcTimeStamp - lastGcTimeStamp<3000){
                         for (l in heavyGcListeners) {
