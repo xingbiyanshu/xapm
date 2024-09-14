@@ -13,17 +13,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
+
+    var dumped=false
     fun onDumpClicked(v: View){
-        Log.i("MainActivity", "####onDumpClicked")
+        Log.i("MainActivity", ">>> onDumpClicked")
+        if (dumped){
+            Log.i("MainActivity", "<<< dumped")
+            return
+        }
+        dumped=true
 
         //Pull the hprof from the devices.
         //adb shell "run-as com.kwai.koom.demo cat 'files/test.hprof'" > ~/temp/test.hprof
 //        ForkJvmHeapDumper.getInstance().dump(
 //            getExternalFilesDir(null)!!.absolutePath + File.separator + "test.hprof"
 //        )
-        ForkStripHeapDumper.getInstance().dump(
+        val result = ForkStripHeapDumper.getInstance().dump(
             getExternalFilesDir(null)!!.absolutePath + File.separator + "test.hprof"
         )
+        Log.i("MainActivity", "<<< onDumpClicked result=$result")
     }
 
 }

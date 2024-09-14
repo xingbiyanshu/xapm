@@ -24,6 +24,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "xapm"
-include(":hprofdumper")
-include(":hprofclipper")
-include(":demo")
+include(":hprof:hprofdumper")
+include(":hprof:hprofclipper")
+include(":hprof:demo")

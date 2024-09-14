@@ -162,13 +162,13 @@ int HprofStrip::GetByteSizeFromType(unsigned char basic_type) {
 
 int HprofStrip::ProcessHeap(const void *buf, int first_index, int max_len,
                             int heap_serial_no, int array_serial_no) {
-    LOG(">>> ProcessHeap first_index=%d, max_len=%d",  first_index, max_len);
+//    LOG(">>> ProcessHeap first_index=%d, max_len=%d",  first_index, max_len);
   if (first_index >= max_len) {
     return array_serial_no;
   }
 
   const unsigned char subtag = ((unsigned char *)buf)[first_index];
-    LOG(" subtag=%d",  subtag);
+//    LOG(" subtag=%d",  subtag);
   switch (subtag) {
     /**
      * __ AddU1(heap_tag);
@@ -560,14 +560,14 @@ void HprofStrip::reset() {
 
 long FullyWritecount=0;
 size_t HprofStrip::FullyWrite(int fd, const void *buf, ssize_t count) {
-    LOG(">>> FullyWrite %ld", FullyWritecount);
+//    LOG(">>> FullyWrite %ld", FullyWritecount);
     FullyWritecount++;
   size_t left = count;
   while (left > 0) {
     ssize_t written = write(fd, (unsigned char*)buf + (count - left), left);
     if (written != -1) left -= written;
   }
-    LOG("<<< FullyWrite");
+//    LOG("<<< FullyWrite");
   return count;
 }
         long WriteInternalcount=0;
@@ -579,7 +579,7 @@ ssize_t HprofStrip::HookWriteInternal(int fd, const void *buf, ssize_t count) {
   reset();
 
   const unsigned char tag = ((unsigned char *)buf)[0];
-    LOG(">>>>>>>>>>>>>>>>>>>>>>>>>>> HookWriteInternal %ld, tag=%d, count=%d",  WriteInternalcount, tag, count);
+//    LOG(">>>>>>>>>>>>>>>>>>>>>>>>>>> HookWriteInternal %ld, tag=%d, count=%d",  WriteInternalcount, tag, count);
     WriteInternalcount++;
   // 删除掉无关record tag类型匹配，只匹配heap相关提高性能
   switch (tag) {
@@ -618,7 +618,7 @@ ssize_t HprofStrip::HookWriteInternal(int fd, const void *buf, ssize_t count) {
     // 将裁剪掉的区间，通过写时过滤掉
     void *write_buf = (void *)((unsigned char *)buf + start_index);
     auto write_len = (size_t)(strip_index_list_pair_[i * 2] - start_index);
-      LOG("i=%d, start_index=%d, write_len=%ld", i, start_index, write_len);
+//      LOG("i=%d, start_index=%d, write_len=%ld", i, start_index, write_len);
     if (write_len > 0) {
       total_write += FullyWrite(fd, write_buf, write_len);
     } else if (write_len < 0) {
@@ -628,7 +628,7 @@ ssize_t HprofStrip::HookWriteInternal(int fd, const void *buf, ssize_t count) {
     start_index = strip_index_list_pair_[i * 2 + 1];
   }
   auto write_len = (size_t)(count - start_index);
-    LOG("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< write_len=%d， count=%d, start_index=%d", write_len, count, start_index);
+//    LOG("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< write_len=%d， count=%d, start_index=%d", write_len, count, start_index);
   if (write_len > 0) {
     void *write_buf = (void *)((unsigned char *)buf + start_index);
     total_write += FullyWrite(fd, write_buf, count - start_index);
