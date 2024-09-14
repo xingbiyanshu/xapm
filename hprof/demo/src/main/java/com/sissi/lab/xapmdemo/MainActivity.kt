@@ -23,7 +23,10 @@ class MainActivity : AppCompatActivity() {
         }
         dumped=true
 
-        //Pull the hprof from the devices.
+        /*
+        * 导出裁剪过的hprof文件。复原需用到tools下面的koom-fill-crop.jar：
+        *
+        * */
         //adb shell "run-as com.kwai.koom.demo cat 'files/test.hprof'" > ~/temp/test.hprof
 //        ForkJvmHeapDumper.getInstance().dump(
 //            getExternalFilesDir(null)!!.absolutePath + File.separator + "test.hprof"

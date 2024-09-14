@@ -23,6 +23,7 @@ package com.kwai.koom.fastdump;
 //import static com.kwai.koom.base.Monitor_ApplicationKt.sdkVersionMatch;
 //import static com.kwai.koom.base.Monitor_SoKt.loadSoQuietly;
 
+import java.io.File;
 import java.io.IOException;
 
 import android.os.Build;
@@ -61,10 +62,19 @@ public class ForkJvmHeapDumper implements HeapDumper {
 //    if (!sdkVersionMatch()) {
 //      throw new UnsupportedOperationException("dump failed caused by sdk version not supported!");
 //    }
+
     init();
     if (!mLoadSuccess) {
 //      MonitorLog.e(TAG, "dump failed caused by so not loaded!");
       return false;
+    }
+
+    File f = new File(path).getParentFile();
+    if (f==null){
+      return false;
+    }
+    if (!f.exists()){
+      f.mkdirs();
     }
 
     boolean dumpRes = false;
