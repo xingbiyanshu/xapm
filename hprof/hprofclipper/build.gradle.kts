@@ -60,6 +60,11 @@ android {
 //            keepDebugSymbols += "**/*.so"
 //        }
 //    }
+    packagingOptions {
+        jniLibs {
+            excludes += "lib/*/libxhook.so"
+        }
+    }
 }
 
 dependencies {

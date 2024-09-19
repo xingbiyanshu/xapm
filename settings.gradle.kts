@@ -27,4 +27,6 @@ rootProject.name = "xapm"
 include(":hprof:hprofdumper")
 include(":hprof:hprofclipper")
 include(":hprof:demo")
-include(":oom:procres")
+include(":proc")
+include(":oom")
+include(":proc:demo")

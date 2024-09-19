@@ -1,4 +1,4 @@
-package com.sissi.lib.procres
+package com.sissi.lib.proc
 
 import java.lang.ref.SoftReference
 import java.lang.ref.WeakReference
@@ -31,7 +31,7 @@ object GcWatcher {
                     for (l in gcListeners) {
                         l.invoke() // TODO gc的时候判断memory的使用情况再dump hprof
                     }
-                    if (curGcTimeStamp - lastGcTimeStamp<3000){
+                    if (curGcTimeStamp - lastGcTimeStamp <3000){
                         for (l in heavyGcListeners) {
                             l.invoke()
                         }
@@ -70,7 +70,7 @@ object GcWatcher {
     fun addGcListener(listener: () -> Unit) {
         synchronized(lock) {
             gcListeners.add(listener)
-            if (probe==null){
+            if (probe ==null){
                 probe = WeakReference(Probe())
             }
         }
@@ -102,7 +102,7 @@ object GcWatcher {
     fun addHeavyGcListener(listener: () -> Unit) {
         synchronized(lock) {
             heavyGcListeners.add(listener)
-            if (heavyGcProbe==null){
+            if (heavyGcProbe ==null){
                 heavyGcProbe = SoftReference(HeavyGcProbe())
             }
         }
