@@ -5,6 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.sissi.lib.proc.FdInfo
 import com.sissi.lib.proc.MemInfo
 import com.sissi.lib.proc.ThreadInfo
 import com.sissi.lib.proc.toStr
@@ -23,7 +24,9 @@ class MainActivity : AppCompatActivity() {
         val memInfo = MemInfo.get()
         val thrInfo = ThreadInfo.getAll()
         println("/############ memInfo\n${memInfo.toString()}")
-        val count = ThreadInfo.getCount()
+        var count = ThreadInfo.getCount()
         println("/############count=$count thrInfo(${thrInfo.size})\n${thrInfo.toStr()}")
+        count=FdInfo.getCount()
+        println("/############count=$count FdInfo\n${FdInfo.getAll().toStr(true)}")
     }
 }

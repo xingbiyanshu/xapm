@@ -4,9 +4,9 @@ import java.lang.ref.SoftReference
 import java.lang.ref.WeakReference
 
 /**
- * GC观测器
+ * GC事件监视器
  */
-object GcWatcher {
+object GcProbe {
 
     private var probe: WeakReference<Probe>? = null
 
@@ -29,12 +29,7 @@ object GcWatcher {
                 try {
                     val curGcTimeStamp = System.currentTimeMillis()
                     for (l in gcListeners) {
-                        l.invoke() // TODO gc的时候判断memory的使用情况再dump hprof
-                    }
-                    if (curGcTimeStamp - lastGcTimeStamp <3000){
-                        for (l in heavyGcListeners) {
-                            l.invoke()
-                        }
+                        l.invoke()
                     }
                     lastGcTimeStamp = curGcTimeStamp
                 } catch (e: Throwable) {

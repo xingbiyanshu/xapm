@@ -91,6 +91,22 @@ class ThreadInfo private constructor(){
 
 
     companion object{
+
+        private fun buildThreadInfo(isNative:Boolean, jvmId:Long, nativeId:Long, name:String,
+                                    state:Thread.State?, priority:Int, isDaemon:Boolean,
+                                    stackTrace:List<StackTraceElement>?):ThreadInfo{
+            return ThreadInfo().apply {
+                _isNative=isNative
+                _jvmId = jvmId
+                _nativeId = nativeId
+                _name = name
+                _state = state
+                _priority = priority
+                _isDaemon=isDaemon
+                _stackTrace = stackTrace
+            }
+        }
+
         /**
          * 获取进程中的JVM线程信息
          */
@@ -98,18 +114,7 @@ class ThreadInfo private constructor(){
             val allStackTraces = Thread.getAllStackTraces()
             val list = mutableListOf<ThreadInfo>()
             for ((k, v) in allStackTraces){
-                list.add(
-                    ThreadInfo().apply {
-                        _isNative=false
-                        _jvmId = k.id
-                        _nativeId = -1
-                        _name = k.name
-                        _state = k.state
-                        _priority = k.priority
-                        _isDaemon=k.isDaemon
-                        _stackTrace = v.toList()
-                    }
-                )
+                list.add(buildThreadInfo(false, k.id, -1, k.name, k.state, k.priority, k.isDaemon, v.toList()))
             }
             return list
         }
@@ -129,16 +134,7 @@ class ThreadInfo private constructor(){
                     val thrName = runCatching {
                         File(it,"comm").readText()
                     }.getOrElse { "failed to read $it/comm" }.removeSuffix("\n")
-                    ThreadInfo().apply {
-                        _isNative=true
-                        _jvmId = -1
-                        _nativeId = thrId
-                        _name = thrName
-                        _state = null
-                        _priority = -1
-                        _isDaemon = false
-                        _stackTrace = null
-                    }
+                    buildThreadInfo(true, -1, thrId, thrName, null, -1, false, null)
                 }/*?.filter { // 过滤掉主线程
                     FIXME /proc下拿到的主线程无法通过上面的jvmThreads过滤，不想办法过滤掉会导致误判主线程为native线程
                     mainThreadNativeId.toString()!=it._nativeId
