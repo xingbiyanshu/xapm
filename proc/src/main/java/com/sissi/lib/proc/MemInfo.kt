@@ -33,6 +33,14 @@ class MemInfo private constructor(){
             return _sysAvailable
         }
 
+    /**
+     * 系统可用内存比例。
+     */
+    val sysAvailableRatio:Double
+        get() {
+            return (_sysAvailable.toDouble()/_sysTotal).clip()
+        }
+
     private var _sysCmaTotal=0
     /**
      * 系统CMA(Contiguous Memory Allocator)总内存。单位MB
@@ -51,24 +59,15 @@ class MemInfo private constructor(){
             return _sysCmaFree
         }
 
-    private var _sysAvailableRatio=0.0
+
+    private var _procJavaHeapOomThreshold=0
     /**
-     * 系统可用内存比例。
+     * 进程java堆内存上限，触及该上限进程将崩溃报OOM。单位MB
      */
-    val sysAvailableRatio:Double
+    val procJavaHeapOomThreshold:Int
         get() {
-            return _sysAvailableRatio
+            return _procJavaHeapOomThreshold
         }
-
-
-//    private var _procJavaHeapOomThreshold=0
-//    /**
-//     * 进程java堆内存上限。单位MB
-//     */
-//    val procJavaHeapOomThreshold:Int
-//        get() {
-//            return _procJavaHeapOomThreshold
-//        }
 //
 //    private var _procLargeJavaHeapOomThreshold=0
 //    /**
@@ -81,13 +80,19 @@ class MemInfo private constructor(){
 
     private var _procJavaHeap=0.0
     /**
-     * 进程java堆内存使用。单位MB
-     * 超过[procJavaHeapOomThreshold]或[procLargeJavaHeapOomThreshold]（当“LargeJavaHeap=true”时）
-     * 会导致OOM
+     * 进程java堆内存已使用。单位MB
      */
     val procJavaHeap:Double
         get() {
             return _procJavaHeap
+        }
+
+    /**
+     * 进程java堆内存可用比例。
+     */
+    val procJavaHeapAvailableRatio:Double
+        get() {
+            return ((_procJavaHeapOomThreshold-_procJavaHeap)/_procJavaHeapOomThreshold).clip()
         }
 
     private var _procNativeHeap=0.0
@@ -166,7 +171,8 @@ class MemInfo private constructor(){
                     }
                 }
             }
-            mi._sysAvailableRatio = (mi._sysAvailable.toDouble()/mi._sysTotal).clip()
+
+            mi._procJavaHeapOomThreshold = (Runtime.getRuntime().maxMemory()/K/K).toInt()
 
             val memInfo = Debug.MemoryInfo()
             Debug.getMemoryInfo(memInfo)
@@ -193,10 +199,12 @@ class MemInfo private constructor(){
                 "sysTotal=$sysTotal, " +"\n"+
                 "sysFree=$sysFree, " +"\n"+
                 "sysAvailable=$sysAvailable, " +"\n"+
+                "sysAvailableRatio=$sysAvailableRatio, " +"\n"+
                 "sysCmaTotal=$sysCmaTotal, " +"\n"+
                 "sysCmaFree=$sysCmaFree, " +"\n"+
-                "sysAvailableRatio=$sysAvailableRatio, " +"\n"+
+                "procJavaHeapOomThreshold=$procJavaHeapOomThreshold, " +"\n"+
                 "procJavaHeap=$procJavaHeap, " +"\n"+
+                "procJavaHeapAvailableRatio=$procJavaHeapAvailableRatio, " +"\n"+
                 "procNativeHeap=$procNativeHeap, " +"\n"+
                 "procCode=$procCode, " +"\n"+
                 "procStack=$procStack, " +"\n"+
@@ -207,4 +215,4 @@ class MemInfo private constructor(){
 
 }
 
-fun Double.clip() = String.format("%.2f", this).toDouble()
+private fun Double.clip() = String.format("%.2f", this).toDouble()

@@ -10,6 +10,7 @@ import com.sissi.lib.proc.MemInfo
 import com.sissi.lib.proc.ThreadInfo
 import com.sissi.lib.proc.toStr
 
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,11 +23,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         val memInfo = MemInfo.get()
+        println("/############ memInfo\n$memInfo")
         val thrInfo = ThreadInfo.getAll()
-        println("/############ memInfo\n${memInfo.toString()}")
         var count = ThreadInfo.getCount()
         println("/############count=$count thrInfo(${thrInfo.size})\n${thrInfo.toStr()}")
+        val fdInfos = FdInfo.getAll()
         count=FdInfo.getCount()
-        println("/############count=$count FdInfo\n${FdInfo.getAll().toStr(true)}")
+        println("/############count=$count FdInfo\n${fdInfos.toStr(true)}")
     }
 }

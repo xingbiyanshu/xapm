@@ -135,7 +135,7 @@ fun List<FdInfo>.toStr(enableSummaryMode:Boolean):String{
     if (enableSummaryMode){
         val sum = summary()
         sb.append("/-------------------- summary --------------------\n")
-        sb.append("total: ${size}\n")
+        sb.append("Total: ${size}\n")
         sum.forEach { (t, u) ->
             sb.append(t).append(": ").append(u).append("\n")
         }
