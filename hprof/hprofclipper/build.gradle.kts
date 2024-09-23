@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sissi.lab.hprofclipper"
+    namespace = "com.sissi.apm.hprof.hprofclipper"
     compileSdk = 34
     ndkVersion = "23.1.7779620" // koom使用的版本，它的agp7.1.0
 //    ndkVersion = "25.1.8937393"
@@ -68,14 +68,14 @@ android {
 }
 
 dependencies {
-    implementation("com.sissi.lab:xhook:1.0")
-    implementation("com.sissi.lab:hprofdumper:1.0")
+    implementation("com.sissi.hook:xhook:1.0")
+    implementation("com.sissi.apm.hprof:hprofdumper:1.0")
 }
 
 publishing {
     publications {
         register<MavenPublication>("hprofclipper") {
-            groupId = "com.sissi.lab"
+            groupId = "com.sissi.apm.hprof"
             artifactId = "hprofclipper"
             version = "1.0"
 

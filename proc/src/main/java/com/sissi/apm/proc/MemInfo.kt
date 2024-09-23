@@ -1,4 +1,4 @@
-package com.sissi.lib.proc
+package com.sissi.apm.proc
 
 import android.os.Debug
 import java.io.File
@@ -146,7 +146,7 @@ class MemInfo private constructor(){
 
         private val K=1024
 
-        fun get() : MemInfo{
+        fun get() : MemInfo {
             val mi = MemInfo()
 
             run{
@@ -172,12 +172,12 @@ class MemInfo private constructor(){
                 }
             }
 
-            mi._procJavaHeapOomThreshold = (Runtime.getRuntime().maxMemory()/K/K).toInt()
+            mi._procJavaHeapOomThreshold = (Runtime.getRuntime().maxMemory()/ K / K).toInt()
 
             val memInfo = Debug.MemoryInfo()
             Debug.getMemoryInfo(memInfo)
             for((key, value) in memInfo.memoryStats){
-                val refinedVal = (value.toDouble()/K).clip()
+                val refinedVal = (value.toDouble()/ K).clip()
                 key.run{
                     when{
                         endsWith(".java-heap") -> mi._procJavaHeap=refinedVal

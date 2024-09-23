@@ -1,15 +1,14 @@
-package com.sissi.lib.demo
+package com.sissi.apm.proc.demo
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.sissi.lib.proc.FdInfo
-import com.sissi.lib.proc.MemInfo
-import com.sissi.lib.proc.ThreadInfo
-import com.sissi.lib.proc.toStr
-
+import com.sissi.apm.proc.FdInfo
+import com.sissi.apm.proc.MemInfo
+import com.sissi.apm.proc.ThreadInfo
+import com.sissi.apm.proc.toStr
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         var count = ThreadInfo.getCount()
         println("/############count=$count thrInfo(${thrInfo.size})\n${thrInfo.toStr()}")
         val fdInfos = FdInfo.getAll()
-        count=FdInfo.getCount()
+        count= FdInfo.getCount()
         println("/############count=$count FdInfo\n${fdInfos.toStr(true)}")
     }
 }

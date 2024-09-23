@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Xapm" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.sissi.apm.hprof.demo.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

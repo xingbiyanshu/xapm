@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.sissi.lab.xapmdemo"
+    namespace = "com.sissi.apm.hprof.demo"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.sissi.lab.xapmdemo"
+        applicationId = "com.sissi.apm.hprof.demo"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -42,5 +42,5 @@ dependencies {
     implementation("androidx.activity:activity:1.8.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    implementation("com.sissi.lab:hprofclipper:1.0")
+    implementation("com.sissi.apm.hprof:hprofclipper:1.0")
 }

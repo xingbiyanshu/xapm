@@ -1,4 +1,4 @@
-package com.sissi.lib.proc
+package com.sissi.apm.proc
 
 import java.io.File
 
@@ -78,7 +78,7 @@ class ThreadInfo private constructor(){
             return _stackTrace
         }
 
-    fun copy(thr:ThreadInfo){
+    fun copy(thr: ThreadInfo){
         _isNative = thr._isNative
         _jvmId = thr._jvmId
         _nativeId = thr._nativeId
@@ -94,7 +94,7 @@ class ThreadInfo private constructor(){
 
         private fun buildThreadInfo(isNative:Boolean, jvmId:Long, nativeId:Long, name:String,
                                     state:Thread.State?, priority:Int, isDaemon:Boolean,
-                                    stackTrace:List<StackTraceElement>?):ThreadInfo{
+                                    stackTrace:List<StackTraceElement>?): ThreadInfo {
             return ThreadInfo().apply {
                 _isNative=isNative
                 _jvmId = jvmId

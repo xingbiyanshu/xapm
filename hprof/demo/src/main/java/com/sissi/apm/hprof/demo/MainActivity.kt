@@ -1,4 +1,4 @@
-package com.sissi.lab.xapmdemo
+package com.sissi.apm.hprof.demo
 
 import android.os.Bundle
 import android.util.Log

@@ -1,13 +1,13 @@
-package com.sissi.lib.oom
+package com.sissi.apm.oom
 
 import android.os.Handler
 import android.os.HandlerThread
-import com.sissi.lib.proc.MemInfo
+import com.sissi.apm.proc.MemInfo
 import kotlin.math.min
 
 object OomMonitor {
 
-    private lateinit var config:Config
+    private lateinit var config: Config
 
     private val listeners by lazy {
         mutableListOf<Listener>()
@@ -39,7 +39,7 @@ object OomMonitor {
 
         override fun run() {
             var delay= MONITOR_INTERVAL
-            val memInfo=MemInfo.get()
+            val memInfo= MemInfo.get()
             val heapUsedRatio = 1-memInfo.procJavaHeapAvailableRatio
             if (1-memInfo.sysAvailableRatio > min(SYSTEM_MEMORY_EXHAUSTED_THRESHOLD, config.systemMemoryExhaustedThreshold)){
                 reportOom(OomType.SystemMemoryExhausted, memInfo)
@@ -61,8 +61,8 @@ object OomMonitor {
             handler.postDelayed(this, delay*1000)
         }
         
-        fun reportOom(type:OomType, info:Any){
-            listeners.forEach { 
+        fun reportOom(type: OomType, info:Any){
+            listeners.forEach {
                 it.onOom(type, info)
             }
             reset()
@@ -96,7 +96,7 @@ object OomMonitor {
         if (OomMonitor::config.isInitialized){
             return
         }
-        this.config=config?:Config()
+        OomMonitor.config =config?: Config()
     }
 
 
@@ -177,7 +177,7 @@ object OomMonitor {
 
 
     interface Listener{
-        fun onOom(type:OomType, info:Any)
+        fun onOom(type: OomType, info:Any)
     }
 
 }

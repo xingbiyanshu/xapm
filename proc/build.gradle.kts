@@ -4,14 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.sissi.lib.proc"
+    namespace = "com.sissi.apm.proc"
     compileSdk = 34
 
     defaultConfig {
         minSdk = 24
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {

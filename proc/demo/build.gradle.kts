@@ -4,17 +4,15 @@ plugins {
 }
 
 android {
-    namespace = "com.sissi.lib.demo"
+    namespace = "com.sissi.apm.proc.demo"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.sissi.lib.demo"
+        applicationId = "com.sissi.apm.proc.demo"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {

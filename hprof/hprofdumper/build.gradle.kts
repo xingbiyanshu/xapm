@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sissi.lab.hprofdumper"
+    namespace = "com.sissi.apm.hprof.hprofdumper"
     compileSdk = 34
 
     ndkVersion = "23.1.7779620" // 对齐koom的版本，高版本会导致dump功能异常，koom尚未适配
@@ -68,7 +68,7 @@ dependencies {
 publishing {
     publications {
         register<MavenPublication>("hprofdumper") {
-            groupId = "com.sissi.lab"
+            groupId = "com.sissi.apm.hprof"
             artifactId = "hprofdumper"
             version = "1.0"
 

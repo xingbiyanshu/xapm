@@ -4,11 +4,14 @@ plugins {
 }
 
 android {
-    namespace = "com.sissi.apm.oom"
+    namespace = "com.sissi.lib.crash"
     compileSdk = 34
 
     defaultConfig {
         minSdk = 24
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -34,5 +37,4 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
-    implementation(project(":proc"))
 }

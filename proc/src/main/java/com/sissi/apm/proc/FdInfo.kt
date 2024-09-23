@@ -1,12 +1,12 @@
-package com.sissi.lib.proc
+package com.sissi.apm.proc
 
 import android.system.Os
 import java.io.File
 
 class FdInfo private constructor(){
 
-    private var _type=Type.OTHERS
-    val type:Type
+    private var _type= Type.OTHERS
+    val type: Type
         get() {
             return _type
         }
@@ -71,7 +71,7 @@ class FdInfo private constructor(){
 
     companion object{
         
-        private fun buildFdInfo(type:Type, fd:String, desc:String):FdInfo{
+        private fun buildFdInfo(type: Type, fd:String, desc:String): FdInfo {
             return FdInfo().apply {
                 _type = type
                 _fd = fd
