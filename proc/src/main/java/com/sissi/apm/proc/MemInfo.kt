@@ -146,6 +146,15 @@ class MemInfo private constructor(){
 
         private val K=1024
 
+        /**
+         * 最近一次的内存信息
+         * 注意：最近一次信息会伴随[get]调用更新，所以如果要比对最近一次信息和当前信息，请先获取最近一次的再获取当前的。
+         * */
+        var lastRecord:MemInfo?=null
+
+        /**
+         * 获取当前内存信息
+         */
         fun get() : MemInfo {
             val mi = MemInfo()
 
@@ -189,6 +198,8 @@ class MemInfo private constructor(){
                     }
                 }
             }
+
+            lastRecord = mi
 
             return mi
         }
