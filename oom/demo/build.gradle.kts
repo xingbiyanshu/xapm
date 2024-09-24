@@ -1,15 +1,19 @@
 plugins {
-    id("com.android.library")
+    id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("maven-publish")
 }
 
 android {
-    namespace = "com.sissi.apm.oom"
+    namespace = "com.sissi.apm.oom.demo"
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 18
+        applicationId = "com.sissi.apm.oom.demo"
+        minSdk = 24
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+
     }
 
     buildTypes {
@@ -33,23 +37,13 @@ android {
 dependencies {
 
     implementation("androidx.core:core-ktx:1.10.1")
-    implementation("com.sissi.apm.proc:proc:1.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.10.0")
+    implementation("androidx.activity:activity:1.8.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    implementation("com.sissi.apm.oom:oom:1.0")
     implementation("com.sissi.apm.log:xlog:1.0")
-}
+    implementation("com.sissi.apm.proc:proc:1.0")
 
-publishing {
-    publications {
-        register<MavenPublication>("oom") {
-            groupId = "com.sissi.apm.oom"
-            artifactId = "oom"
-            version = "1.0"
-
-            afterEvaluate {
-                from(components["release"])
-            }
-        }
-    }
-    repositories {
-        mavenLocal()
-    }
 }

@@ -25,15 +25,9 @@ object OomMonitor {
         }
     }
 
-    private val handler by lazy {
-        Handler(handlerThread.looper)
-    }
+    private var handler:Handler?=null
 
-    /**
-     * 监控的间隔。单位：秒
-     */
-    private const val MONITOR_INTERVAL=10L
-    
+
     private val memInfoMonitor = object : Runnable {
         // java堆使用比例（已用/最大）硬性限制。超过该限制直接上报oom，不论用户设置的比例是多少。
         val JAVA_HEAP_FORCE_OOM_RATIO_THRESHOLD = 0.95
@@ -81,9 +75,11 @@ object OomMonitor {
                 javaHeapContinuousOverThresholdCount = 0
             }
 
+//            logger.i("oomConfirming=$oomConfirming, oomType=$oomType, memInfo=\n$memInfo")
+
             lastJavaHeapRatio = heapUsedRatio
 
-            handler.postDelayed(this, if (oomConfirming) 2000L else MONITOR_INTERVAL)
+            handler?.postDelayed(this, (if (oomConfirming) 2 else 10)*1000L)
         }
 
     }
@@ -91,7 +87,7 @@ object OomMonitor {
 
     private val threadsInfoMonitor = object : Runnable {
         val OVER_THRESHOLD_COUNT_LIMIT = 3
-        val FALL_BACK_GAP = 50
+        val FALL_BACK_GAP = 20
         var continuousOverThresholdCount=0
         var lastCount=0
 
@@ -120,9 +116,11 @@ object OomMonitor {
                 continuousOverThresholdCount = 0
             }
 
+//            logger.i("threadCount=$count, threadThreshold=${config.threadThreshold}, oomConfirming=$oomConfirming, oomType=$oomType")
+
             lastCount = count
 
-            handler.postDelayed(this, if (oomConfirming) 2000L else MONITOR_INTERVAL)
+            handler?.postDelayed(this, (if (oomConfirming) 1 else 5)*1000L)
         }
 
     }
@@ -130,7 +128,7 @@ object OomMonitor {
 
     private val fdsInfoMonitor = object : Runnable {
         val OVER_THRESHOLD_COUNT_LIMIT = 3
-        val FALL_BACK_GAP = 50
+        val FALL_BACK_GAP = 20
         var continuousOverThresholdCount=0
         var lastCount=0
 
@@ -159,9 +157,11 @@ object OomMonitor {
                 continuousOverThresholdCount = 0
             }
 
+            logger.i("fdcount=$count, fdThreshold=${config.fdThreshold}, oomConfirming=$oomConfirming, oomType=$oomType")
+
             lastCount = count
 
-            handler.postDelayed(this, if (oomConfirming) 2000L else MONITOR_INTERVAL)
+            handler?.postDelayed(this, (if (oomConfirming) 1 else 5)*1000L)
         }
     }
 
@@ -174,21 +174,38 @@ object OomMonitor {
         }
         this.config =config
         this.logger = logger
+//        val oomThreshold = MemInfo.getProcJavaHeapOomThreshold()
+//        this.config.javaHeapOverflowThreshold=when{
+//            oomThreshold>=512->oomThreshold*0.96
+//            oomThreshold>=384->oomThreshold*0.95
+//            oomThreshold>=192->oomThreshold*0.9
+//            else->oomThreshold*0.9
+//        }
     }
 
 
     fun start(){
+        if (handler!=null){
+            logger.e("OomMonitor started already!")
+            return
+        }
         logger.i("OomMonitor start!")
-        handler.removeCallbacksAndMessages(null)
-        handler.post(memInfoMonitor)
-        handler.post(threadsInfoMonitor)
-        handler.post(fdsInfoMonitor)
+        handler = Handler(handlerThread.looper).apply {
+            post(memInfoMonitor)
+            post(threadsInfoMonitor)
+            post(fdsInfoMonitor)
+        }
     }
 
 
     fun stop(){
+        if (handler==null){
+            logger.e("OomMonitor has not started yet!")
+            return
+        }
         logger.i("OomMonitor stop!")
-        handler.removeCallbacksAndMessages(null)
+        handler?.removeCallbacksAndMessages(null)
+        handler=null
     }
 
 
@@ -210,7 +227,7 @@ object OomMonitor {
     }
 
 
-    fun reportOom(type: OomType, info:Any){
+    private fun reportOom(type: OomType, info:Any){
         listeners.forEach {
             it.onOom(type, info)
         }
@@ -238,7 +255,7 @@ object OomMonitor {
          * 系统内存告急的阈值（已用占比）。
          * 触及该阈值则认为系统内存告急，Monitor报oom
          */
-        val systemMemoryExhaustedThreshold:Double=0.9,
+        val systemMemoryExhaustedThreshold:Double=0.95,
         /**
          * 进程可用文件描述符耗尽的阈值。
          * 触及该阈值则认为进程可用的文件描述符即将耗尽，Monitor报oom

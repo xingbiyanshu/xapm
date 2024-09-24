@@ -14,69 +14,53 @@ class ThreadInfo private constructor(){
      * 是否native线程。true：native线程；false：jvm线程
      */
     val isNative:Boolean
-        get() {
-            return _isNative
-        }
+        get() =_isNative
 
     private var _jvmId = -1L
     /**
      * jvm的线程id
      */
     val jvmId:Long
-        get() {
-            return _jvmId
-        }
+        get()=_jvmId
 
     private var _nativeId=-1L
     /**
      * 系统的线程号，各种linux命令如top展示的线程号
      */
     val nativeId:Long
-        get() {
-            return _nativeId
-        }
+        get() =_nativeId
 
     private var _name=""
     /**
      * 线程名
      */
     val name:String
-        get() {
-            return _name
-        }
+        get() =_name
 
     private var _state:Thread.State?=null
     val state:Thread.State?
-        get() {
-            return _state
-        }
+        get() =_state
 
     private var _priority=-1
     /**
      * 线程优先级
      */
     val priority:Int
-        get() {
-            return _priority
-        }
+        get() =_priority
 
     private var _isDaemon=false
     /**
      * 是否守护线程
      */
     val isDaemon:Boolean
-        get() {
-            return _isDaemon
-        }
+        get() =_isDaemon
 
     private var _stackTrace:List<StackTraceElement>?=null
     /**
      * 线程堆栈
      */
     val stackTrace:List<StackTraceElement>?
-        get() {
-            return _stackTrace
-        }
+        get() =_stackTrace
 
     fun copy(thr: ThreadInfo){
         _isNative = thr._isNative

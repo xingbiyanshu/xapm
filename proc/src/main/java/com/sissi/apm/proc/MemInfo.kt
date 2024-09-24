@@ -10,18 +10,14 @@ class MemInfo private constructor(){
      * 系统总内存。单位MB
      */
     val sysTotal:Int
-        get() {
-            return _sysTotal
-        }
+        get() =_sysTotal
 
     private var _sysFree=0
     /**
      * 系统空闲内存。单位MB
      */
     val sysFree:Int
-        get() {
-            return _sysFree
-        }
+        get() =_sysFree
 
     private var _sysAvailable=0
     /**
@@ -29,35 +25,27 @@ class MemInfo private constructor(){
      * 可用内存大于空闲内存，有些内存虽然被使用但可在需要时释放。
      */
     val sysAvailable:Int
-        get() {
-            return _sysAvailable
-        }
+        get() =_sysAvailable
 
     /**
      * 系统可用内存比例。
      */
     val sysAvailableRatio:Double
-        get() {
-            return (_sysAvailable.toDouble()/_sysTotal).clip()
-        }
+        get() =(_sysAvailable.toDouble()/_sysTotal).clip()
 
     private var _sysCmaTotal=0
     /**
      * 系统CMA(Contiguous Memory Allocator)总内存。单位MB
      */
     val sysCmaTotal:Int
-        get() {
-            return _sysCmaTotal
-        }
+        get() =_sysCmaTotal
 
     private var _sysCmaFree=0
     /**
      * 系统CMA(Contiguous Memory Allocator)空闲内存。单位MB
      */
     val sysCmaFree:Int
-        get() {
-            return _sysCmaFree
-        }
+        get() =_sysCmaFree
 
 
     private var _procJavaHeapOomThreshold=0
@@ -65,80 +53,55 @@ class MemInfo private constructor(){
      * 进程java堆内存上限，触及该上限进程将崩溃报OOM。单位MB
      */
     val procJavaHeapOomThreshold:Int
-        get() {
-            return _procJavaHeapOomThreshold
-        }
-//
-//    private var _procLargeJavaHeapOomThreshold=0
-//    /**
-//     * 当设置了“LargeJavaHeap=true”时进程java堆内存上限。单位MB
-//     */
-//    val procLargeJavaHeapOomThreshold:Int
-//        get() {
-//            return _procLargeJavaHeapOomThreshold
-//        }
+        get()= _procJavaHeapOomThreshold
 
     private var _procJavaHeap=0.0
     /**
      * 进程java堆内存已使用。单位MB
      */
     val procJavaHeap:Double
-        get() {
-            return _procJavaHeap
-        }
+        get()=_procJavaHeap
 
     /**
      * 进程java堆内存可用比例。
      */
     val procJavaHeapAvailableRatio:Double
-        get() {
-            return ((_procJavaHeapOomThreshold-_procJavaHeap)/_procJavaHeapOomThreshold).clip()
-        }
+        get() =((_procJavaHeapOomThreshold-_procJavaHeap)/_procJavaHeapOomThreshold).clip()
 
     private var _procNativeHeap=0.0
     /**
      * 进程native堆内存使用。单位MB
      */
     val procNativeHeap:Double
-        get() {
-            return _procNativeHeap
-        }
+        get() =_procNativeHeap
 
     private var _procCode=0.0
     /**
      * 进程code占用内存。单位MB
      */
     val procCode:Double
-        get() {
-            return _procCode
-        }
+        get() =_procCode
 
     private var _procStack=0.0
     /**
      * 进程栈内存占用。单位MB
      */
     val procStack:Double
-        get() {
-            return _procStack
-        }
+        get() =_procStack
 
     private var _procGraphics=0.0
     /**
      * 进程Graphics占用内存。单位MB
      */
     val procGraphics:Double
-        get() {
-            return _procGraphics
-        }
+        get() =_procGraphics
 
     private var _procTotalPss=0.0
     /**
      * 进程总占用内存。单位MB
      */
     val procTotalPss:Double
-        get() {
-            return _procTotalPss
-        }
+        get() =_procTotalPss
 
 
 
@@ -150,7 +113,10 @@ class MemInfo private constructor(){
          * 最近一次的内存信息
          * 注意：最近一次信息会伴随[get]调用更新，所以如果要比对最近一次信息和当前信息，请先获取最近一次的再获取当前的。
          * */
-        var lastRecord:MemInfo?=null
+        var _lastRecord:MemInfo?=null
+
+        val lastRecord:MemInfo?
+            get()=_lastRecord
 
         /**
          * 获取当前内存信息
@@ -199,10 +165,16 @@ class MemInfo private constructor(){
                 }
             }
 
-            lastRecord = mi
+            _lastRecord = mi
 
             return mi
         }
+
+        /**
+         * 获取进程允许使用的java堆内存上限。单位：MB
+         */
+        fun getProcJavaHeapOomThreshold() = (Runtime.getRuntime().maxMemory()/ K / K).toInt()
+
     }
 
     override fun toString(): String {

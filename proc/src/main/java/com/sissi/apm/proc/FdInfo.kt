@@ -7,21 +7,15 @@ class FdInfo private constructor(){
 
     private var _type= Type.OTHERS
     val type: Type
-        get() {
-            return _type
-        }
+        get() =_type
 
     private var _fd=""
     val fd:String
-        get() {
-            return _fd
-        }
+        get() =_fd
 
     private var _description=""
     val description:String
-        get() {
-            return _description
-        }
+        get() =_description
     
     enum class Type{
 
@@ -130,7 +124,7 @@ class FdInfo private constructor(){
 
 private val HEAD_FORMAT = "%-30s %-20s %s"
 private val HEAD = String.format(HEAD_FORMAT, "Type", "FD", "Description")
-fun List<FdInfo>.toStr(enableSummaryMode:Boolean):String{
+fun List<FdInfo>.toStr(enableSummaryMode:Boolean=true):String{
     val sb=StringBuilder()
     if (enableSummaryMode){
         val sum = summary()
