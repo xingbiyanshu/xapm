@@ -166,6 +166,8 @@ object OomMonitor {
     }
 
 
+    @JvmStatic
+    @JvmOverloads
     fun init(/*app:Application, */config: Config=Config(), logger:Logger=DefaultLogger()){
         logger.i("OomMonitor init!")
         if (OomMonitor::config.isInitialized){
@@ -184,6 +186,7 @@ object OomMonitor {
     }
 
 
+    @JvmStatic
     fun start(){
         if (handler!=null){
             logger.e("OomMonitor started already!")
@@ -198,6 +201,7 @@ object OomMonitor {
     }
 
 
+    @JvmStatic
     fun stop(){
         if (handler==null){
             logger.e("OomMonitor has not started yet!")
@@ -209,18 +213,21 @@ object OomMonitor {
     }
 
 
+    @JvmStatic
     fun addListener(listener: Listener){
         logger.i("OomMonitor add listener: $listener")
         listeners.add(listener)
     }
 
 
+    @JvmStatic
     fun delListener(listener: Listener){
         logger.i("OomMonitor del listener: $listener")
         listeners.remove(listener)
     }
 
 
+    @JvmStatic
     fun delAllListeners(){
         logger.i("OomMonitor del all listeners!")
         listeners.clear()
