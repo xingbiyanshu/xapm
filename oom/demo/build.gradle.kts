@@ -45,5 +45,6 @@ dependencies {
     implementation("com.sissi.apm.oom:oom:1.0")
     implementation("com.sissi.apm.log:xlog:1.0")
     implementation("com.sissi.apm.proc:proc:1.0")
+    implementation("com.sissi.apm.hprof:hprofclipper:1.0")
 
 }

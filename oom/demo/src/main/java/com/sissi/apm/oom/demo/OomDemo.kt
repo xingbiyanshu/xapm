@@ -1,6 +1,7 @@
 package com.sissi.apm.oom.demo
 
 import android.app.Application
+import com.kwai.koom.javaoom.hprof.ForkStripHeapDumper
 import com.sissi.apm.log.DefaultLogger
 import com.sissi.apm.log.Logger
 import com.sissi.apm.oom.OomMonitor
@@ -8,6 +9,7 @@ import com.sissi.apm.proc.FdInfo
 import com.sissi.apm.proc.MemInfo
 import com.sissi.apm.proc.ThreadInfo
 import com.sissi.apm.proc.toStr
+import java.io.File
 
 class OomDemo : Application() {
 
@@ -31,6 +33,13 @@ class OomDemo : Application() {
                     }
                     logger.i("oomtype=$type, info=\n$oomInfo")
                     stop()
+
+                    if (type==OomMonitor.OomType.JavaHeapOverFlow || type==OomMonitor.OomType.JavaHeapSuddenlySwell) {
+                        // oom时导出hprof
+//                    ForkStripHeapDumper.getInstance().dump(
+//                        filesDir!!.absolutePath + File.separator + "test.hprof"
+//                    )
+                    }
                 }
             })
             start()

@@ -2,10 +2,12 @@ package com.sissi.apm.oom.demo
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.kwai.koom.javaoom.hprof.ForkStripHeapDumper
 import com.sissi.apm.log.DefaultLogger
 import com.sissi.apm.log.Logger
 import kotlinx.coroutines.delay
@@ -33,20 +35,31 @@ class MainActivity : AppCompatActivity() {
         var bytes: ByteArray = ByteArray(1024)
     }
 
+    var dumped=false
     fun onOomClicked(v: View){
+        Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show() // 用于判断dump hprof时是否阻塞主线程
+        if (dumped){
+            return
+        }
         // JavaHeapSuddenlySwell or JavaHeapOverFlow
-//        thread {
-//            val l= mutableListOf<Test>()
-//            for (i in 0..1000*1000*1000){
-//                l.add(Test())
-//                if (i>1000*330) {
-//                    Thread.sleep(1)
-//                    if (i%100==0){
-//                        logger.i("size=${i/1000.0}MB")
-//                    }
-//                }
-//            }
-//        }
+        thread {
+            val l= mutableListOf<Test>()
+            for (i in 0..1000*1000*1000){
+                l.add(Test())
+                if (i>1000*170) {
+                    Thread.sleep(1)
+                    if (i%100==0){
+                        logger.i("size=${i/1000.0}MB")
+                    }
+                }
+                if (i==1000*185){
+                    logger.i("==== dump hprof")
+                    ForkStripHeapDumper.getInstance().dump(
+                        filesDir!!.absolutePath + File.separator + "test.hprof"
+                    )
+                }
+            }
+        }
 
         // ThreadOverFlow
 //        thread {
@@ -72,5 +85,6 @@ class MainActivity : AppCompatActivity() {
 //            Thread.sleep(60*1000)
 //        }
 
+        dumped = true
     }
 }

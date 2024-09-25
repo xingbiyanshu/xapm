@@ -157,7 +157,7 @@ object OomMonitor {
                 continuousOverThresholdCount = 0
             }
 
-            logger.i("fdcount=$count, fdThreshold=${config.fdThreshold}, oomConfirming=$oomConfirming, oomType=$oomType")
+//            logger.i("fdcount=$count, fdThreshold=${config.fdThreshold}, oomConfirming=$oomConfirming, oomType=$oomType")
 
             lastCount = count
 
