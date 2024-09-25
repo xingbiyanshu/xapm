@@ -41,6 +41,22 @@ object OomMonitor {
 
         val SYSTEM_MEMORY_EXHAUSTED_THRESHOLD = 0.95
 
+        val refinedProcJavaHeapUsedRatioThreshold:Double by lazy {
+            val oomThreshold = MemInfo.getProcJavaHeapOomThreshold()
+            when{
+                oomThreshold>=512->oomThreshold*0.96
+                oomThreshold>=384->oomThreshold*0.95
+                oomThreshold>=192->oomThreshold*0.9
+                else->oomThreshold*0.9
+            }
+        }
+
+        val javaHeapOverflowThreshold:Double by lazy {
+            if (config.strictMode)
+                config.javaHeapOverflowThreshold
+            else refinedProcJavaHeapUsedRatioThreshold
+        }
+
         override fun run() {
             val lastMemInfo = MemInfo.lastRecord
             val memInfo= MemInfo.get()
@@ -53,7 +69,7 @@ object OomMonitor {
                 oomType = OomType.JavaHeapOverFlow
             }else if (lastMemInfo!=null && memInfo.procJavaHeap-lastMemInfo.procJavaHeap > config.javaHeapSuddenlySwellThreshold){
                 oomType = OomType.JavaHeapSuddenlySwell
-            }else if (heapUsedRatio > config.javaHeapOverflowThreshold){
+            }else if (heapUsedRatio > javaHeapOverflowThreshold){
                 if (config.strictMode){
                     oomType = OomType.JavaHeapOverFlow
                 }else if (heapUsedRatio >= lastJavaHeapRatio - JAVA_HEAP_RATIO_FALL_BACK_GAP){
@@ -75,7 +91,7 @@ object OomMonitor {
                 javaHeapContinuousOverThresholdCount = 0
             }
 
-//            logger.i("oomConfirming=$oomConfirming, oomType=$oomType, memInfo=\n$memInfo")
+            logger.i("oomConfirming=$oomConfirming, oomType=$oomType")
 
             lastJavaHeapRatio = heapUsedRatio
 
@@ -176,13 +192,6 @@ object OomMonitor {
         }
         this.config =config
         this.logger = logger
-//        val oomThreshold = MemInfo.getProcJavaHeapOomThreshold()
-//        this.config.javaHeapOverflowThreshold=when{
-//            oomThreshold>=512->oomThreshold*0.96
-//            oomThreshold>=384->oomThreshold*0.95
-//            oomThreshold>=192->oomThreshold*0.9
-//            else->oomThreshold*0.9
-//        }
     }
 
 

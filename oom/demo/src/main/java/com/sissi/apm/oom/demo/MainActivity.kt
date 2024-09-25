@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.kwai.koom.javaoom.hprof.ForkStripHeapDumper
 import com.sissi.apm.log.DefaultLogger
 import com.sissi.apm.log.Logger
+import com.sissi.apm.proc.MemInfo
 import kotlinx.coroutines.delay
 import java.io.BufferedWriter
 import java.io.File
@@ -41,22 +42,26 @@ class MainActivity : AppCompatActivity() {
         if (dumped){
             return
         }
+        val thresHold = MemInfo.getProcJavaHeapOomThreshold()
         // JavaHeapSuddenlySwell or JavaHeapOverFlow
         thread {
             val l= mutableListOf<Test>()
+            var hprofDumped=false
             for (i in 0..1000*1000*1000){
                 l.add(Test())
-                if (i>1000*170) {
+                val over = i/1024.0>thresHold*0.9
+                if (over) {
                     Thread.sleep(1)
                     if (i%100==0){
-                        logger.i("size=${i/1000.0}MB")
+                        logger.i("size=${i/1024.0}MB")
                     }
                 }
-                if (i==1000*185){
+                if (over && !hprofDumped){
                     logger.i("==== dump hprof")
                     ForkStripHeapDumper.getInstance().dump(
                         filesDir!!.absolutePath + File.separator + "test.hprof"
                     )
+                    hprofDumped = true
                 }
             }
         }
