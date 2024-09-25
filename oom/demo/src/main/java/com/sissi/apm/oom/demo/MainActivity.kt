@@ -49,20 +49,25 @@ class MainActivity : AppCompatActivity() {
             var hprofDumped=false
             for (i in 0..1000*1000*1000){
                 l.add(Test())
+                if (i/1024>200){
+                    if (i%1000==0) {
+                        Thread.sleep(200) // 注掉此处会触发JavaHeapSuddenlySwell
+                    }
+                }
                 val over = i/1024.0>thresHold*0.9
                 if (over) {
                     Thread.sleep(1)
-                    if (i%100==0){
+                    if (i%1000==0){
                         logger.i("size=${i/1024.0}MB")
                     }
                 }
-                if (over && !hprofDumped){
-                    logger.i("==== dump hprof")
-                    ForkStripHeapDumper.getInstance().dump(
-                        filesDir!!.absolutePath + File.separator + "test.hprof"
-                    )
-                    hprofDumped = true
-                }
+//                if (over && !hprofDumped){
+//                    logger.i("==== dump hprof")
+//                    ForkStripHeapDumper.getInstance().dump(
+//                        filesDir!!.absolutePath + File.separator + "test.hprof"
+//                    )
+//                    hprofDumped = true
+//                }
             }
         }
 

@@ -30,7 +30,7 @@ object OomMonitor {
 
     private val memInfoMonitor = object : Runnable {
         // java堆使用比例（已用/最大）硬性限制。超过该限制直接上报oom，不论用户设置的比例是多少。
-        val JAVA_HEAP_FORCE_OOM_RATIO_THRESHOLD = 0.95
+        val JAVA_HEAP_FORCE_OOM_RATIO_THRESHOLD = 0.98
         // java堆使用比例触及用户设置的限制，允许的次数，达到该次数才报oom
         val JAVA_HEAP_OVER_THRESHOLD_COUNT_LIMIT = 3
         /** 当java堆使用比例触及用户设置的限制后，我们开始密切关注后续java堆变化情况，若持续超限，且回落的幅度小于该值
@@ -44,9 +44,9 @@ object OomMonitor {
         val refinedProcJavaHeapUsedRatioThreshold:Double by lazy {
             val oomThreshold = MemInfo.getProcJavaHeapOomThreshold()
             when{
-                oomThreshold>=512->oomThreshold*0.96
-                oomThreshold>=384->oomThreshold*0.95
-                oomThreshold>=192->oomThreshold*0.9
+                oomThreshold>=512->0.96
+                oomThreshold>=384->0.95
+                oomThreshold>=192->0.9
                 else->oomThreshold*0.9
             }
         }
@@ -83,6 +83,10 @@ object OomMonitor {
                 }
             }
 
+            logger.i("config.javaHeapOverflowThreshold=${config.javaHeapOverflowThreshold}, " +
+                    "refinedProcJavaHeapUsedRatioThreshold=$refinedProcJavaHeapUsedRatioThreshold, " +
+                    "heapUsedRatio=$heapUsedRatio, oomConfirming=$oomConfirming, oomType=$oomType")
+
             if (oomType!=null){
                 reportOom(oomType, memInfo)
             }
@@ -90,8 +94,6 @@ object OomMonitor {
             if (!oomConfirming){
                 javaHeapContinuousOverThresholdCount = 0
             }
-
-            logger.i("oomConfirming=$oomConfirming, oomType=$oomType")
 
             lastJavaHeapRatio = heapUsedRatio
 
