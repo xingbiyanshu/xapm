@@ -27,6 +27,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs += listOf("-module-name", "com.sissi.apm.log.xlog")
     }
 }
 
