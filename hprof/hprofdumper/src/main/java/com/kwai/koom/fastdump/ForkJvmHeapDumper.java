@@ -28,6 +28,7 @@ import java.io.IOException;
 
 import android.os.Build;
 import android.os.Debug;
+import android.util.Log;
 
 //import com.kwai.koom.base.MonitorBuildConfig;
 //import com.kwai.koom.base.MonitorLog;
@@ -77,17 +78,32 @@ public class ForkJvmHeapDumper implements HeapDumper {
       f.mkdirs();
     }
 
+    File hprof = new File(path);
+    if (!hprof.exists()){
+        try {
+            hprof.createNewFile();
+            hprof.setReadable(true);
+            hprof.setWritable(true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     boolean dumpRes = false;
     try {
 //      MonitorLog.i(TAG, "before suspend and fork.");
       int pid = suspendAndFork();
       if (pid == 0) {
         // Child process
+        Log.i("DUMP", "start dump");
         Debug.dumpHprofData(path);
+        Log.i("DUMP", "finish dump");
         exitProcess();
       } else if (pid > 0) {
         // Parent process
+        Log.i("DUMP", "waiting dump proc "+pid);
         dumpRes = resumeAndWait(pid);
+        Log.i("DUMP", "dump proc finished!");
 //        MonitorLog.i(TAG, "dump " + dumpRes + ", notify from pid " + pid);
       }
     } catch (IOException e) {

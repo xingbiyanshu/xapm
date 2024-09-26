@@ -43,4 +43,5 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     implementation("com.sissi.apm.hprof:hprofclipper:1.0")
+    implementation("com.sissi.x7z:x7z:1.0")
 }

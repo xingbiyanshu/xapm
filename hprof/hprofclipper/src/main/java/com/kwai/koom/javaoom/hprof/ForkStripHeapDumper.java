@@ -19,6 +19,8 @@
 package com.kwai.koom.javaoom.hprof;
 
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.kwai.koom.fastdump.ForkJvmHeapDumper;
 
@@ -44,7 +46,8 @@ public class ForkStripHeapDumper {
     initStripDump();
   }
 
-  public synchronized boolean dump(String path) {
+  static int clipThreadCount=0;
+  public synchronized boolean dump(String path, ResultListener resultListener) {
     int sdkInt = Build.VERSION.SDK_INT;
     if (!(Build.VERSION_CODES.LOLLIPOP <= sdkInt
             && sdkInt <= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)){
@@ -56,17 +59,30 @@ public class ForkStripHeapDumper {
     if (!mLoadSuccess) {
       return false;
     }
-    boolean dumpRes = false;
+    final boolean[] dumpRes = {false};
     try {
       hprofName(path);
-      dumpRes = ForkJvmHeapDumper.getInstance().dump(path);
+      new Thread("clipHprof"+ ++clipThreadCount){
+        @Override
+        public void run() {
+          dumpRes[0] = ForkJvmHeapDumper.getInstance().dump(path);
+          new Handler(Looper.getMainLooper()).post(() -> {
+            if (resultListener!=null) resultListener.onDumpFinished(dumpRes[0]);
+          });
+        }
+      }.start();
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return dumpRes;
+    return dumpRes[0];
   }
 
   public native void initStripDump();
 
   public native void hprofName(String name);
+
+  public interface ResultListener{
+    void onDumpFinished(boolean success);
+  }
+
 }
