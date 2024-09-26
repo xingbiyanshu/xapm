@@ -11,6 +11,8 @@ import android.os.Message
 import android.os.Process
 import android.os.SystemClock
 import android.util.Printer
+import com.sissi.apm.log.DefaultLogger
+import com.sissi.apm.log.Logger
 import java.lang.ref.WeakReference
 import java.util.Stack
 import java.util.Timer
@@ -31,6 +33,8 @@ object CrashCatcher {
     const val TYPE_ANR=3
 
     private val handler=Handler(Looper.getMainLooper())
+
+    private lateinit var logger:Logger
 
     init {
         System.loadLibrary("nativecrashcatcher")
@@ -58,7 +62,6 @@ object CrashCatcher {
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
 //            KLog.p("onActivityCreated $activity")
             if (!isState(RUNNING)){
-                KLog.p(KLog.ERROR, "app is not running(state=$state), force finish $activity")
                 handler.post {
                     activity.finish()
                 }
@@ -88,7 +91,7 @@ object CrashCatcher {
         override fun onActivityDestroyed(activity: Activity) {
             synchronized(actStackLock) {
                 if (!isState(RUNNING)) {
-                    KLog.p("state=$state, onActivityDestroyed $activity")
+                    logger.i("state=$state, onActivityDestroyed $activity")
                 }
 
                 for (actR in actStack){
@@ -99,12 +102,8 @@ object CrashCatcher {
                     }
                 }
 
-                if (isState(STOPPING)){
-                    KLog.p(actStack.info())
-                }
-
                 if (actStack.isEmpty()){
-                    KLog.p("activity stack become empty! state=$state")
+                    logger.i("activity stack become empty! state=$state")
                     if (isState(STOPPING)){
                         setState(STOPPED)
 //                        if (forceQuitAfterCrashHandled) {
@@ -121,11 +120,11 @@ object CrashCatcher {
 
         fun clearActivityStack(){
             synchronized(actStackLock) {
-                KLog.p("clear ActivityStack, size=%s", actStack.size)
+                logger.i("clear ActivityStack, size=${actStack.size}")
                 setState(STOPPING)
                 for (i in actStack.lastIndex downTo 0) {
                     val act = actStack[i].get()
-                    KLog.p("finish activity[$i] $act")
+                    logger.i("finish activity[$i] $act")
                     act?.finish()
                 }
 
@@ -158,10 +157,10 @@ object CrashCatcher {
      */
     @JvmStatic
     @JvmOverloads
-    fun init(app:Application, forceQuitAfterCrashHandled:Boolean=true) {
-        KLog.p("forceQuitAfterCrashHandled=$forceQuitAfterCrashHandled")
+    fun init(app:Application, forceQuitAfterCrashHandled:Boolean=true, logger:Logger=DefaultLogger()) {
+        logger.i("forceQuitAfterCrashHandled=$forceQuitAfterCrashHandled")
         if (this::app.isInitialized){
-            KLog.p(KLog.ERROR, "has inited already!")
+            logger.e("has inited already!")
             return
         }
 
@@ -181,7 +180,7 @@ object CrashCatcher {
                     // 延时一段时间然后退出进程。
                     Timer("exitProcess").schedule(object : TimerTask() {
                         override fun run() {
-                            KLog.p(KLog.WARN, "exit process!!")
+                            CrashCatcher.logger.w("exit process!!")
                             Process.killProcess(Process.myPid())
                             exitProcess(0)
                         }
@@ -319,7 +318,7 @@ object CrashCatcher {
                                 msg.obj=strCount
 //                                KLog.p("sending msg LOOPER_PROCESS_FINISHED(%s)", strCount)
                                 if (costTime> min(500, stuckTimeLimit)){
-                                    KLog.p(KLog.WARN, "main looper process msg(%s) cost %sms", strCount, costTime)
+                                    logger.w("main looper process msg($strCount) cost ${costTime}ms")
                                 }
                                 stuckMonitorHandler.sendMessage(msg)
                             }
