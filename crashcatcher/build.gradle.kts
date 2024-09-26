@@ -1,17 +1,15 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
 }
 
 android {
-    namespace = "com.sissi.lib.crash"
+    namespace = "com.sissi.apm.crashcatcher"
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 24
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
+        minSdk = 18
     }
 
     buildTypes {
@@ -36,4 +34,21 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("com.sissi.apm.log:xlog:1.0")
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("crashcatcher") {
+            groupId = "com.sissi.apm.crashcatcher"
+            artifactId = "crashcatcher"
+            version = "1.0"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
