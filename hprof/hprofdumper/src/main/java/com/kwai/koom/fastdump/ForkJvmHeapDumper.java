@@ -30,6 +30,8 @@ import android.os.Build;
 import android.os.Debug;
 import android.util.Log;
 
+//import SevenZip.Compression.LZMA.EncoderWrapper;
+
 //import com.kwai.koom.base.MonitorBuildConfig;
 //import com.kwai.koom.base.MonitorLog;
 //import com.kwai.koom.base.MonitorManager;
@@ -110,7 +112,27 @@ public class ForkJvmHeapDumper implements HeapDumper {
 //      MonitorLog.e(TAG, "dump failed caused by " + e);
       e.printStackTrace();
     }
-    return dumpRes;
+
+
+//    // 压缩
+//    // 比较耗时，内存即将溢出时很容易失败，可以在app重启后去做。
+//    int pid = suspendAndFork();
+//    if (pid == 0) {
+//      // Child process
+//      File hf = new File(path);
+//      Log.i("LZMA", "compress start");
+//      new EncoderWrapper(1<<23/*太大的话速度会比较慢*/).code(hf, new File(hf.getAbsolutePath()+".enc"));
+//      Log.i("LZMA", "compress finished");
+//
+//      exitProcess();
+//    } else if (pid > 0) {
+//      // Parent process
+//      Log.i("LZMA", "waiting compress proc "+pid);
+//      resumeAndWait(pid);
+//      Log.i("LZMA", "compress proc finished!");
+//    }
+
+      return dumpRes;
   }
 
   /**

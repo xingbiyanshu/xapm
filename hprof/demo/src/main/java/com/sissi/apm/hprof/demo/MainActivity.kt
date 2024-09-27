@@ -38,10 +38,8 @@ class MainActivity : AppCompatActivity() {
 //            getExternalFilesDir(null)!!.absolutePath + File.separator + "test.hprof"
 //        )
         val hprofPath = getExternalFilesDir(null)!!.absolutePath + File.separator + "test.hprof"
-        val result = ForkStripHeapDumper.getInstance().dump(hprofPath) {
-            if (it) {
-                EncoderWrapper().code(File(hprofPath), File("$hprofPath.enc"), null)
-            }
+        val result = ForkStripHeapDumper.getInstance().dumpWithNonBlockManner(hprofPath) {
+            Log.i("MainActivity", "<<< dump finish, result=$it")
         }
 
         Log.i("MainActivity", "<<< onDumpClicked result=$result")

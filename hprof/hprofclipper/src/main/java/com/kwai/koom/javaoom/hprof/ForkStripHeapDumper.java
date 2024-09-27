@@ -46,8 +46,33 @@ public class ForkStripHeapDumper {
     initStripDump();
   }
 
+  public synchronized boolean dump(String path) {
+    int sdkInt = Build.VERSION.SDK_INT;
+    if (!(Build.VERSION_CODES.LOLLIPOP <= sdkInt
+            && sdkInt <= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)){
+      // not supported
+      return false;
+    }
+
+    init();
+    if (!mLoadSuccess) {
+      return false;
+    }
+    boolean dumpRes = false;
+    try {
+      hprofName(path);
+
+      dumpRes = ForkJvmHeapDumper.getInstance().dump(path);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return dumpRes;
+  }
+
   static int clipThreadCount=0;
-  public synchronized boolean dump(String path, ResultListener resultListener) {
+  public synchronized boolean dumpWithNonBlockManner(String path, ResultListener resultListener) {
     int sdkInt = Build.VERSION.SDK_INT;
     if (!(Build.VERSION_CODES.LOLLIPOP <= sdkInt
             && sdkInt <= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)){
